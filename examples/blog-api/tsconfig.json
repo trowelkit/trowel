@@ -4,5 +4,13 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "db",
+    "durable-objects",
+    "queues",
+    "routes",
+    "src",
+    "*.ts"
+  ]
 }
