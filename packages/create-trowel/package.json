@@ -1,0 +1,35 @@
+{
+  "name": "create-trowel",
+  "version": "0.0.0",
+  "description": "Create a Void app with sign-in, policies, events, notifications and rate limiting from Trowel.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/create-trowel#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/create-trowel"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "keywords": [
+    "void",
+    "cloudflare",
+    "starter",
+    "template",
+    "create"
+  ],
+  "bin": {
+    "create-trowel": "./dist/index.mjs"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - packages/create-trowel/template
   - examples/*
 
 # Per Void's quickstart: Void ships its own SQLite binaries.

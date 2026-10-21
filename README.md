@@ -11,6 +11,14 @@ Void gives you the foundation: routing, database, auth, queues, email, storage a
 
 > Trowel is an independent community project. It isn't affiliated with VoidZero or Cloudflare.
 
+## Start a new app
+
+```sh
+npm create trowel my-app
+```
+
+This creates a Void app with React, sign-in, and the packages below already wired together. See [`create-trowel`](packages/create-trowel).
+
 ## Packages
 
 | Package | What it does | Status |

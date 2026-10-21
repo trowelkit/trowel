@@ -1,0 +1,28 @@
+{
+  "name": "trowel-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "void prepare && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@trowelkit/events": "workspace:*",
+    "@trowelkit/notifications": "workspace:*",
+    "@trowelkit/policies": "workspace:*",
+    "@trowelkit/rate-limit": "workspace:*",
+    "hono": "^4.13.13",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@void/react": "^1.1.12",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "void": "^1.1.12"
+  }
+}
