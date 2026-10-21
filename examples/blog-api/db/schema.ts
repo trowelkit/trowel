@@ -8,3 +8,11 @@ export const posts = sqliteTable('posts', {
 });
 
 export type Post = typeof posts.$inferSelect;
+
+// Written by a queued event listener, so the e2e script can see that it ran.
+export const activity = sqliteTable('activity', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  type: text('type').notNull(),
+  postId: integer('post_id').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+});

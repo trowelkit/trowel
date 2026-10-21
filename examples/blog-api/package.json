@@ -8,6 +8,7 @@
     "typecheck": "void prepare && tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@trowelkit/events": "workspace:*",
     "@trowelkit/policies": "workspace:*",
     "hono": "^4.13.13"
   },

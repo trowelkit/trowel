@@ -26,6 +26,9 @@ importers:
 
   examples/blog-api:
     dependencies:
+      '@trowelkit/events':
+        specifier: workspace:*
+        version: link:../../packages/events
       '@trowelkit/policies':
         specifier: workspace:*
         version: link:../../packages/policies

@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
-# End-to-end check of @trowelkit/policies. Start `pnpm dev` first, then run this script.
+# End-to-end check of the example. Start `pnpm dev` first, then run this script.
 set -u
 BASE=http://localhost:5173
 JARS=$(mktemp -d)
 ORIGIN="Origin: $BASE"
 fails=0
 
-signup() { # name email
-  curl -s -c "$JARS/$1" -H "$ORIGIN" -H 'content-type: application/json' \
-    -d "{\"name\":\"$1\",\"email\":\"$2\",\"password\":\"example-password-123\"}" \
-    "$BASE/api/auth/sign-up/email" -o /dev/null -w "signup $1: %{http_code}\n"
+signup() { # name email; signs in instead when the user exists from an earlier run
+  local body="{\"name\":\"$1\",\"email\":\"$2\",\"password\":\"example-password-123\"}"
+  local code; code=$(curl -s -c "$JARS/$1" -H "$ORIGIN" -H 'content-type: application/json' \
+    -d "$body" "$BASE/api/auth/sign-up/email" -o /dev/null -w '%{http_code}')
+  if [ "$code" != 200 ]; then
+    code=$(curl -s -c "$JARS/$1" -H "$ORIGIN" -H 'content-type: application/json' \
+      -d "$body" "$BASE/api/auth/sign-in/email" -o /dev/null -w '%{http_code}')
+    echo "sign in $1: $code"
+  else
+    echo "sign up $1: $code"
+  fi
 }
 
 # req WHO METHOD PATH [BODY] -> prints "status body"
@@ -17,11 +24,22 @@ req() {
   local who=$1 method=$2 path=$3 body=${4:-}
   local jar=()
   [ "$who" != guest ] && jar=(-b "$JARS/$who")
-  local args=(-s -X "$method" "${jar[@]}" -H "$ORIGIN" -w '\n%{http_code}')
+  local args=(-s -X "$method" ${jar[@]+"${jar[@]}"} -H "$ORIGIN" -w '\n%{http_code}')
   [ -n "$body" ] && args+=(-H 'content-type: application/json' -d "$body")
   local out; out=$(curl "${args[@]}" "$BASE$path")
   local code=${out##*$'\n'}; local text=${out%$'\n'*}
   echo "$code $text"
+}
+
+# eventually DESCRIPTION WHO PATH PATTERN: polls until the response body contains PATTERN.
+eventually() {
+  local desc=$1 who=$2 path=$3 pattern=$4 result
+  for _ in $(seq 1 20); do
+    result=$(req "$who" GET "$path")
+    if [[ "$result" == *"$pattern"* ]]; then echo "PASS  $desc"; return; fi
+    sleep 0.5
+  done
+  echo "FAIL  $desc: $pattern not found in $result"; fails=$((fails+1))
 }
 
 check() { # description expected-status WHO METHOD PATH [BODY]
@@ -53,6 +71,11 @@ check "admin can view alice's draft (before hook)" 200 admin GET "/api/posts/$dr
 check "bob can't see stats (middleware)"           403 bob GET /api/admin/stats
 check "guest can't see stats (middleware)"         401 guest GET /api/admin/stats
 check "admin sees stats"                           200 admin GET /api/admin/stats
+# Publishing dispatches PostPublished. Its listener is queued, so it runs from queues/events.ts.
+eventually "queued listener recorded the published post" admin /api/admin/activity "\"postId\":$pub_id,"
+check "publishing a draft"                         200 alice PATCH "/api/posts/$draft_id" '{"published":true}'
+eventually "queued listener recorded the newly published draft" admin /api/admin/activity "\"postId\":$draft_id,"
+check "unpublish the draft again"                  200 alice PATCH "/api/posts/$draft_id" '{"published":false}'
 check "list for guest shows only published"        200 guest GET /api/posts
 check "list for alice shows her draft too"         200 alice GET /api/posts
 check "alice can delete her draft"                 204 alice DELETE "/api/posts/$draft_id"
