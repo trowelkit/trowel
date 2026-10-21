@@ -22,6 +22,7 @@ jobs:
       - name: Use the latest Void
         if: github.event_name == 'schedule'
         run: pnpm -r --filter './packages/*' update void@latest
+      # Build first: the examples import the packages through their dist/ output.
+      - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm build

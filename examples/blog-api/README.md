@@ -19,6 +19,7 @@ From the repo root:
 
 ```sh
 pnpm install
+pnpm build          # the example uses the packages' built output
 cd examples/blog-api
 pnpm void db push   # create the posts table locally
 pnpm dev            # http://localhost:5173
