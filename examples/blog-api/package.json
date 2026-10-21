@@ -1,0 +1,19 @@
+{
+  "name": "@trowelkit/example-blog-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "void prepare && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@trowelkit/policies": "workspace:*",
+    "hono": "^4.13.13"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "void": "^1.1.12"
+  }
+}

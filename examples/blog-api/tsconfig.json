@@ -1,0 +1,8 @@
+{
+  "extends": "./.void/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  }
+}
