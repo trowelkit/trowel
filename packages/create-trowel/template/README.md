@@ -1,6 +1,11 @@
 # Trowel App
 
-A [Void](https://void.cloud) app with React, built from the Trowel starter. People sign up, write posts and publish them. Publishing emails the author and adds an in-app notification, and each user can create five posts a minute.
+A [Void](https://void.cloud) app with React and Tailwind, built from the Trowel starter.
+
+- **Accounts:** sign up, email verification, sign in, forgot and reset password, and settings to change your name and password or delete your account.
+- **Posts:** verified users write drafts and publish them. Policies decide who may view, publish and delete each post.
+- **Notifications:** publishing emails the author and adds an in-app notification, from a queued event listener.
+- **Rate limiting:** each user can create five posts a minute.
 
 ## Run it
 
@@ -9,13 +14,17 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 and sign up. When the dev server starts, Void applies the migrations in `db/migrations/` to a local D1 database. Mail doesn't leave your machine: it lands in Void's local inbox, whose URL the dev server prints.
+Open http://localhost:5173 and sign up. When the dev server starts, Void applies the migrations in `db/migrations/` to a local D1 database. Mail doesn't leave your machine: it lands in Void's local inbox, whose URL the dev server prints. Open the verification email there to unlock posting.
 
 ## What's where
 
 | Path | What it does |
 |---|---|
 | `pages/` | React pages, with their loaders and actions in `.server.ts` files |
+| `pages/sign-in.tsx`, `sign-up.tsx`, `forgot-password.tsx`, `reset-password.tsx`, `settings.tsx` | The account pages |
+| `auth.ts` | Void's auth settings: verification and reset emails, and account deletion |
+| `src/account.ts`, `src/notifications/account.ts` | The account emails, sent through the notifier, and the data removed with an account |
+| `src/components/ui.tsx` | Buttons, fields, cards and alerts, styled with Tailwind (`src/app.css`) |
 | `middleware/01.shared.ts` | The signed-in user and their unread count, for every page |
 | `src/gate.ts`, `src/policies/post.ts` | Who may view, create, publish and delete posts ([`@trowelkit/policies`](https://github.com/trowelkit/trowel/tree/main/packages/policies)) |
 | `src/events/`, `src/listeners/` | The event bus, the `PostPublished` event and its queued listener ([`@trowelkit/events`](https://github.com/trowelkit/trowel/tree/main/packages/events)) |

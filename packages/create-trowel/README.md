@@ -18,11 +18,13 @@ npm run dev
 
 The app has:
 
-- Sign-up and sign-in with Void's auth
-- Posts with policies for who may view, publish and delete them ([`@trowelkit/policies`](../policies))
+- Accounts on Void's auth: sign up, email verification, sign in, forgot and reset password, and settings to change your name and password or delete your account
+- A React UI styled with Tailwind
+- Posts with policies for who may view, publish and delete them, and a verified email to create them ([`@trowelkit/policies`](../policies))
 - A `PostPublished` event with a queued listener ([`@trowelkit/events`](../events))
 - A notification to the author by mail and in the app ([`@trowelkit/notifications`](../notifications))
 - A limit of five new posts per user per minute ([`@trowelkit/rate-limit`](../rate-limit))
+- Tests with Vitest and [`@trowelkit/testing`](../testing), and generators from [`@trowelkit/cli`](../cli)
 
 It follows Void's project layout, and keeps Trowel code in `src/`. The generated README explains where everything is.
 

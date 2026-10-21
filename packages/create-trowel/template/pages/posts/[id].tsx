@@ -1,5 +1,6 @@
 import { action, Link } from '@void/react';
 import { useState } from 'react';
+import { Alert, Badge, Button, Card } from '../../src/components/ui';
 import type { Props } from './[id].server';
 
 export default function PostPage({ post, can }: Props) {
@@ -16,25 +17,29 @@ export default function PostPage({ post, can }: Props) {
   }
 
   return (
-    <article>
-      <p>
-        <Link href="/">← All posts</Link>
-      </p>
-      <h1>
-        {post.title}
-        {!post.published && <span className="badge">Draft</span>}
-      </h1>
-      <p className="muted">by {post.authorName}</p>
-      {post.body && <p>{post.body}</p>}
-      <p>
-        {can.publish && <button onClick={() => run('publish')}>Publish</button>}{' '}
-        {can.delete && (
-          <button className="link" onClick={() => confirm('Delete this post?') && run('delete')}>
-            Delete
-          </button>
+    <article className="space-y-6">
+      <Link href="/" className="text-sm text-amber-700 hover:underline dark:text-amber-500">
+        ← All posts
+      </Link>
+      <Card>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {post.title}
+          {!post.published && <Badge>Draft</Badge>}
+        </h1>
+        <p className="mt-1 text-sm text-stone-500">by {post.authorName}</p>
+        {post.body && <p className="mt-6 whitespace-pre-line leading-relaxed">{post.body}</p>}
+        {(can.publish || can.delete) && (
+          <div className="mt-6 flex gap-3 border-t border-stone-200 pt-6 dark:border-stone-800">
+            {can.publish && <Button onClick={() => run('publish')}>Publish</Button>}
+            {can.delete && (
+              <Button variant="secondary" onClick={() => confirm('Delete this post?') && run('delete')}>
+                Delete
+              </Button>
+            )}
+          </div>
         )}
-      </p>
-      {error && <p className="error">{error}</p>}
+      </Card>
+      {error && <Alert tone="error">{error}</Alert>}
     </article>
   );
 }

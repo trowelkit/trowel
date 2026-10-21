@@ -12,7 +12,10 @@ export const loader = defineHandler(async () => {
   const user = getUser();
   // The same rule as the post.view policy, as a query: published posts, plus your drafts.
   const visible = user ? or(eq(posts.published, true), eq(posts.authorId, user.id)) : eq(posts.published, true);
-  return { posts: await db.select().from(posts).where(visible).orderBy(desc(posts.createdAt)) };
+  return {
+    posts: await db.select().from(posts).where(visible).orderBy(desc(posts.createdAt)),
+    canCreate: await gate.allows('post.create'),
+  };
 });
 
 const newPost = createInsertSchema(posts, {

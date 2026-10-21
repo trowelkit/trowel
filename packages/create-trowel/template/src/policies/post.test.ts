@@ -3,7 +3,7 @@ import type { AuthUser } from 'void/auth';
 import { describe, expect, it } from 'vitest';
 import post from './post';
 
-const user = (id: string) => ({ id, name: id, email: `${id}@example.com` }) as AuthUser;
+const user = (id: string, emailVerified = true) => ({ id, name: id, email: `${id}@example.com`, emailVerified }) as AuthUser;
 const ann = user('ann');
 const ben = user('ben');
 
@@ -25,6 +25,11 @@ describe('post policy', () => {
     expect(post.view(ben, draft)).toBe(false);
     expect(post.view(null, draft)).toBe(false);
     expect(post.view(null, published)).toBe(true);
+  });
+
+  it('needs a verified email to create posts', () => {
+    expect(post.create(ann)).toBe(true);
+    expect(post.create(user('new', false))).toEqual({ allowed: false, message: 'Verify your email address before posting.' });
   });
 
   it('lets only the author publish, once', () => {
