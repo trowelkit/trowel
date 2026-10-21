@@ -16,7 +16,7 @@ Void gives you the foundation: routing, database, auth, queues, email, storage a
 | Package | What it does | Status |
 |---|---|---|
 | [`@trowelkit/policies`](packages/policies) | Gates and policies for authorization | In progress |
-| `@trowelkit/events` | Events with sync or queued listeners | Planned |
+| [`@trowelkit/events`](packages/events) | Events with sync or queued listeners | In progress |
 | `@trowelkit/notifications` | Notifications over mail, database, SMS and chat | Planned |
 | `@trowelkit/rate-limit` | Rate limiting backed by Durable Objects | Planned |
 | `@trowelkit/testing` | Fakes for events, notifications and queues | Planned |

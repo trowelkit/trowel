@@ -1,0 +1,36 @@
+{
+  "name": "@trowelkit/events",
+  "version": "0.0.0",
+  "description": "Events with sync or queued listeners for Void apps.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/events#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/events"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "void",
+    "cloudflare",
+    "events",
+    "listeners",
+    "queues"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
