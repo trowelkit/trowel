@@ -18,8 +18,8 @@ Open http://localhost:5173 and sign up. When the dev server starts, Void applies
 | `pages/` | React pages, with their loaders and actions in `.server.ts` files |
 | `middleware/01.shared.ts` | The signed-in user and their unread count, for every page |
 | `src/gate.ts`, `src/policies/post.ts` | Who may view, create, publish and delete posts ([`@trowelkit/policies`](https://github.com/trowelkit/trowel/tree/main/packages/policies)) |
-| `src/events.ts`, `src/listeners/` | The `PostPublished` event and its queued listener ([`@trowelkit/events`](https://github.com/trowelkit/trowel/tree/main/packages/events)) |
-| `src/notifier.ts`, `src/notifications/` | Mail and in-app notifications ([`@trowelkit/notifications`](https://github.com/trowelkit/trowel/tree/main/packages/notifications)) |
+| `src/events/`, `src/listeners/` | The event bus, the `PostPublished` event and its queued listener ([`@trowelkit/events`](https://github.com/trowelkit/trowel/tree/main/packages/events)) |
+| `src/notifications/` | The notifier, and the mail and in-app notification sent on publish ([`@trowelkit/notifications`](https://github.com/trowelkit/trowel/tree/main/packages/notifications)) |
 | `src/rate-limit.ts`, `durable-objects/rate-limiter.ts` | Five new posts per user per minute ([`@trowelkit/rate-limit`](https://github.com/trowelkit/trowel/tree/main/packages/rate-limit)) |
 | `queues/` | Consumers for queued events and notification deliveries |
 | `db/schema.ts`, `db/migrations/` | The `posts` and `notifications` tables |

@@ -1,9 +1,9 @@
-import { createEventBus, defineEvent } from '@trowelkit/events';
+import { createEventBus } from '@trowelkit/events';
 import { queues } from 'void/queues';
-import { notifyAuthor } from './listeners/notify-author';
-import type { Recipient } from './notifications/post-published';
+import { notifyAuthor } from '../listeners/notify-author';
+import { PostPublished } from './post-published';
 
-export const PostPublished = defineEvent<{ id: number; title: string; author: Recipient }>('post.published');
+export { PostPublished };
 
 export const events = createEventBus({
   // Needed for queued listeners, which run from queues/events.ts.

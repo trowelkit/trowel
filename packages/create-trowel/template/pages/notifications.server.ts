@@ -1,6 +1,6 @@
 import { defineHandler, type InferProps } from 'void';
 import { getUser, requireAuth } from 'void/auth';
-import { inbox } from '../src/notifier';
+import { inbox } from '../src/notifications';
 
 export type Props = InferProps<typeof loader>;
 

@@ -1,6 +1,6 @@
 import { defineMiddleware } from 'void';
 import { getUser, type AuthUser } from 'void/auth';
-import { inbox } from '../src/notifier';
+import { inbox } from '../src/notifications';
 
 declare module 'void' {
   interface CloudContextVariables {
