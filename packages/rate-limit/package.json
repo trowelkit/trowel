@@ -1,0 +1,51 @@
+{
+  "name": "@trowelkit/rate-limit",
+  "version": "0.0.0",
+  "description": "Fixed-window rate limiting backed by Durable Objects for Void apps.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/rate-limit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/rate-limit"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "void",
+    "cloudflare",
+    "rate-limit",
+    "durable-objects",
+    "middleware"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./void": {
+      "types": "./dist/void.d.mts",
+      "import": "./dist/void.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "void": ">=1.1.0"
+  },
+  "peerDependenciesMeta": {
+    "void": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "void": "^1.1.12"
+  }
+}
