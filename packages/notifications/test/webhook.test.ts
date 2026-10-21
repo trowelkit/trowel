@@ -66,7 +66,7 @@ describe('webhookChannel', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it('only calls https URLs outside local and private networks by default', async () => {
+  it('only calls https URLs with a public host name by default', async () => {
     const fetch = fetchAnswering(200);
     const send = (url: string, allowUrl?: (url: URL) => boolean) =>
       Promise.resolve(
@@ -82,12 +82,18 @@ describe('webhookChannel', () => {
     for (const url of [
       'http://chat.example.com/hook',
       'https://localhost/hook',
+      'https://localhost./hook',
+      'https://api.localhost/hook',
+      'https://intranet/hook',
+      'https://metadata.internal./hook',
+      'https://printer.local/hook',
       'https://127.0.0.1/hook',
       'https://0x7f.1/hook',
-      'https://10.0.0.5/hook',
       'https://169.254.169.254/latest',
+      'https://8.8.8.8/hook',
       'https://[::1]/hook',
-      'https://metadata.internal/hook',
+      'https://[::127.0.0.1]/hook',
+      'https://[64:ff9b::a00:1]/hook',
     ]) {
       const error = await send(url);
       expect(error, url).toBeInstanceOf(DeliveryError);
@@ -97,7 +103,8 @@ describe('webhookChannel', () => {
     expect(fetch).not.toHaveBeenCalled();
 
     expect(await send('http://localhost:8787/hook', (url) => url.hostname === 'localhost')).toBeUndefined();
-    expect(fetch).toHaveBeenCalledOnce();
+    expect(await send('https://hooks.chat.example.com/T0/B0/secret')).toBeUndefined();
+    expect(fetch).toHaveBeenCalledTimes(2);
   });
 
   it("doesn't follow redirects and gives up after the timeout", async () => {

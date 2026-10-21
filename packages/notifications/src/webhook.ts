@@ -14,9 +14,10 @@ export interface WebhookChannelOptions<R> {
   /** Extra request headers, such as `authorization`. */
   headers?: Readonly<Record<string, string>> | ((recipient: R) => MaybePromise<Readonly<Record<string, string>>>);
   /**
-   * Decides whether a URL may be called. Defaults to `https` URLs whose host
-   * isn't a local or private address. When people can enter their own webhook
-   * URLs, pass a check that allows only the services you support.
+   * Decides whether a URL may be called. Defaults to `isPublicHttpsUrl`:
+   * `https`, a host name rather than an IP address, and not a local name. That
+   * check can't see where a name resolves, so when people can enter their own
+   * webhook URLs, pass a check that allows only the services you support.
    */
   allowUrl?: (url: URL) => boolean;
   /** Seconds to wait for an answer before retrying. Defaults to 10. */
@@ -25,31 +26,18 @@ export interface WebhookChannelOptions<R> {
   fetch?: (input: string, init: RequestInit) => Promise<Response>;
 }
 
-/** Hosts that point at the local machine or a private network, written as names or IP addresses. */
-export function isPrivateHost(hostname: string): boolean {
-  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase();
-  if (host === 'localhost' || /\.(localhost|local|internal)$/.test(host)) return true;
-  const v4 = /^(\d+)\.(\d+)\.\d+\.\d+$/.exec(host);
-  if (v4) {
-    const [a, b] = [Number(v4[1]), Number(v4[2])];
-    return (
-      a === 0 ||
-      a === 10 ||
-      a === 127 ||
-      (a === 100 && b >= 64 && b <= 127) ||
-      (a === 169 && b === 254) ||
-      (a === 172 && b >= 16 && b <= 31) ||
-      (a === 192 && b === 168)
-    );
-  }
-  if (host.includes(':')) {
-    return host === '::' || host === '::1' || /^f[cd]/.test(host) || /^fe[89ab]/.test(host) || host.startsWith('::ffff:');
-  }
-  return false;
-}
-
-function allowedByDefault(url: URL) {
-  return url.protocol === 'https:' && !isPrivateHost(url.hostname);
+/**
+ * The default URL check: `https`, with a host name rather than an IP address,
+ * and not a local or single-label name. It looks at the URL only, so a public
+ * name that resolves to a private address still passes; it isn't SSRF
+ * protection on its own.
+ */
+export function isPublicHttpsUrl(url: URL): boolean {
+  if (url.protocol !== 'https:') return false;
+  const host = url.hostname.toLowerCase().replace(/\.+$/, '');
+  const ipAddress = host.startsWith('[') || /^[\d.]+$/.test(host);
+  const local = !host.includes('.') || /\.(localhost|local|internal|home\.arpa)$/.test(host);
+  return !ipAddress && !local;
 }
 
 /**
@@ -59,7 +47,7 @@ function allowedByDefault(url: URL) {
  * followed. Errors never include the URL, which often holds a secret.
  */
 export function webhookChannel<R = unknown>(options: WebhookChannelOptions<R>): Channel<WebhookMessage, R> {
-  const allowUrl = options.allowUrl ?? allowedByDefault;
+  const allowUrl = options.allowUrl ?? isPublicHttpsUrl;
   const timeoutMs = (options.timeout ?? 10) * 1000;
 
   return {
