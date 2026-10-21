@@ -1,7 +1,7 @@
 {
   "name": "@trowelkit/notifications",
   "version": "0.0.0",
-  "description": "Notifications over mail, database and custom channels for Void apps.",
+  "description": "Notifications over mail, database, webhook and custom channels for Void apps.",
   "license": "MIT",
   "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/notifications#readme",
   "repository": {

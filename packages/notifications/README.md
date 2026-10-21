@@ -126,6 +126,27 @@ await inbox.markAsRead(user, [id]); // or markAsRead(user) for all of them
 
 Rows have `id`, `type` (the notification's name), `notifiableId`, `data`, `readAt` and `createdAt`.
 
+## Webhooks
+
+`webhookChannel()` posts the builder's message as JSON, which suits chat apps' incoming webhooks. Name the channel whatever you like; the notification's builder uses the same name.
+
+```ts
+import { webhookChannel } from '@trowelkit/notifications';
+import { env } from 'void/env';
+
+export const notifier = createNotifier({
+  channels: {
+    chat: webhookChannel({ url: () => env.CHAT_WEBHOOK_URL }),
+  },
+});
+
+export const Deployed = defineNotification('deployed', {
+  chat: (_team: Team, deploy: { version: string }) => ({ text: `Deployed ${deploy.version}` }),
+});
+```
+
+`url` is a string or a function of the recipient, so each team can have its own webhook. Return nothing to skip a recipient without retrying. Pass `headers` for authorization. Rate limits (429) and server errors (5xx) are retried; other client errors aren't. Errors never include the URL, which often holds a secret.
+
 ## Custom channels
 
 A channel is an object with a `send(delivery)` method. The notification's builder for that channel's name makes `delivery.message`.
@@ -173,6 +194,7 @@ While faked, sends are recorded with the channels they would use and their built
 | `notifier.sendNow(recipients, notification, payload?)` | Delivers now |
 | `notifier.consume(batch)` | Queue consumer |
 | `notifier.fake({ only? })` | Records sends for tests |
+| `webhookChannel({ url, headers?, fetch? })` | Posts the message as JSON to a webhook |
 | `DeliveryError` | Fails a delivery, optionally without retries |
 | `mailChannel(options?)` (`/void`) | Mail through `sendEmail` |
 | `databaseChannel({ table, db?, recipientId? })` (`/void`) | Stored notifications, with `unread`, `all`, `unreadCount` and `markAsRead` |
