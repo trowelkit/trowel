@@ -2,7 +2,7 @@ import { posts } from '@schema';
 import { defineHandler } from 'void';
 import { requireAuth } from 'void/auth';
 import { db } from 'void/db';
-import { events, PostPublished } from '../../../src/events';
+import { authorOf, events, PostPublished } from '../../../src/events';
 import { gate } from '../../../src/gate';
 
 export const GET = defineHandler(async () => {
@@ -18,9 +18,12 @@ export const POST = defineHandler(async (c) => {
   await gate.authorize('post.create');
   const user = requireAuth(c);
   const { title, published = false } = await c.req.json<{ title: string; published?: boolean }>();
-  const [post] = await db.insert(posts).values({ title, published, authorId: user.id }).returning();
+  const [post] = await db
+    .insert(posts)
+    .values({ title, published, authorId: user.id, authorName: user.name, authorEmail: user.email })
+    .returning();
   if (post!.published) {
-    await events.dispatch(PostPublished, { postId: post!.id, authorId: post!.authorId, title: post!.title });
+    await events.dispatch(PostPublished, { postId: post!.id, title: post!.title, author: authorOf(post!) });
   }
   return c.json(post, 201);
 });

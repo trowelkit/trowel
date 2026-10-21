@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@trowelkit/events": "workspace:*",
+    "@trowelkit/notifications": "workspace:*",
     "@trowelkit/policies": "workspace:*",
     "hono": "^4.13.13"
   },

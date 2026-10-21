@@ -3,6 +3,9 @@
 set -u
 BASE=http://localhost:5173
 JARS=$(mktemp -d)
+# The dev inbox needs the token that `pnpm dev` writes here.
+TOKEN=$(cat "$(dirname "$0")/../.void/dev-trigger-token")
+RUN=$(date +%s)
 ORIGIN="Origin: $BASE"
 fails=0
 
@@ -42,6 +45,29 @@ eventually() {
   echo "FAIL  $desc: $pattern not found in $result"; fails=$((fails+1))
 }
 
+# absent DESCRIPTION WHO PATH PATTERN: the response body must not contain PATTERN.
+absent() {
+  local desc=$1 result; result=$(req "$2" GET "$3")
+  if [[ "$result" != *"$4"* ]]; then echo "PASS  $desc"
+  else echo "FAIL  $desc: found $4 in $result"; fails=$((fails+1)); fi
+}
+
+# in_inbox DESCRIPTION SUBJECT RECIPIENT: polls Void's dev inbox until a message with SUBJECT
+# shows up, then checks its recipient (the inbox lists From and To after the subject).
+in_inbox() {
+  local row
+  for _ in $(seq 1 20); do
+    row=$(curl -s -H "x-void-dev-trigger: $TOKEN" "$BASE/__void/inbox" | grep -F -A2 "$2")
+    if [ -n "$row" ]; then
+      if [[ "$row" == *"$3"* ]]; then echo "PASS  $1"
+      else echo "FAIL  $1: the message isn't addressed to $3: $row"; fails=$((fails+1)); fi
+      return
+    fi
+    sleep 0.5
+  done
+  echo "FAIL  $1: \"$2\" is not in the dev inbox"; fails=$((fails+1))
+}
+
 check() { # description expected-status WHO METHOD PATH [BODY]
   local desc=$1 expected=$2; shift 2
   local result; result=$(req "$@")
@@ -56,7 +82,7 @@ signup admin admin@example.com
 
 check "guest can't create a post (401)"            401 guest POST /api/posts '{"title":"nope"}'
 draft=$(req alice POST /api/posts '{"title":"Alice draft"}'); echo "alice creates draft → $draft"
-pub=$(req alice POST /api/posts '{"title":"Alice published","published":true}'); echo "alice creates published → $pub"
+pub=$(req alice POST /api/posts "{\"title\":\"Alice published $RUN\",\"published\":true}"); echo "alice creates published → $pub"
 draft_id=$(echo "$draft" | sed -E 's/.*"id":([0-9]+).*/\1/')
 pub_id=$(echo "$pub" | sed -E 's/.*"id":([0-9]+).*/\1/')
 
@@ -73,6 +99,13 @@ check "guest can't see stats (middleware)"         401 guest GET /api/admin/stat
 check "admin sees stats"                           200 admin GET /api/admin/stats
 # Publishing dispatches PostPublished. Its listener is queued, so it runs from queues/events.ts.
 eventually "queued listener recorded the published post" admin /api/admin/activity "\"postId\":$pub_id,"
+# Publishing also notifies the author by mail and in the app, through queues/notifications.ts.
+in_inbox "the author was mailed through the dev inbox" "Your post is live: Alice published $RUN" "&lt;alice@example.com&gt;"
+eventually "the author has an unread notification" alice /api/notifications "\"title\":\"Alice published $RUN\""
+absent "other users don't see it"                  bob /api/notifications "Alice published $RUN"
+check "guests have no notifications (401)"         401 guest GET /api/notifications
+check "the author marks them as read"              200 alice POST /api/notifications/read '{}'
+eventually "nothing is unread afterwards"          alice /api/notifications '"unread":0,'
 check "publishing a draft"                         200 alice PATCH "/api/posts/$draft_id" '{"published":true}'
 eventually "queued listener recorded the newly published draft" admin /api/admin/activity "\"postId\":$draft_id,"
 check "unpublish the draft again"                  200 alice PATCH "/api/posts/$draft_id" '{"published":false}'

@@ -29,6 +29,9 @@ importers:
       '@trowelkit/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@trowelkit/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
       '@trowelkit/policies':
         specifier: workspace:*
         version: link:../../packages/policies
