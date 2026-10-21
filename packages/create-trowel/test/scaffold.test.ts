@@ -45,6 +45,20 @@ describe('scaffold', () => {
     expect(existsSync(join(targetDir, 'pnpm-workspace.yaml'))).toBe(false);
   });
 
+  it('leaves out local secrets and data from a copy of the template', async () => {
+    const copy = join(root, 'template-copy');
+    await scaffold(options({ targetDir: copy, packageManager: 'npm' }));
+    for (const file of ['.env', '.env.local', '.dev.vars', 'local.sqlite']) await writeFile(join(copy, file), 'secret');
+    await writeFile(join(copy, '.env.example'), 'NAME=');
+
+    const { targetDir } = options();
+    await scaffold(options({ templateDir: copy }));
+    for (const file of ['.env', '.env.local', '.dev.vars', 'local.sqlite']) {
+      expect(existsSync(join(targetDir, file)), file).toBe(false);
+    }
+    expect(existsSync(join(targetDir, '.env.example'))).toBe(true);
+  });
+
   it('names the app and pins the Trowel packages to published versions', async () => {
     await scaffold(options());
     const manifest = await manifestOf(options().targetDir);

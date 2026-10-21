@@ -4,3 +4,9 @@ dist
 .wrangler
 .void-wrangler.jsonc
 *.log
+# Local secrets and data must never ship with the template.
+.env
+.env.*
+!.env.example
+.dev.vars*
+*.sqlite*

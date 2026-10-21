@@ -19,6 +19,12 @@ export interface ScaffoldOptions {
 // Development leftovers that may sit in the template; never part of a new app.
 const SKIPPED = new Set(['node_modules', 'dist', '.void', '.wrangler', '.void-wrangler.jsonc', '.npmignore']);
 
+// Local secrets and data, in case a maintainer's copy of the template has them.
+function isPrivate(name: string) {
+  if (name === '.env.example') return false;
+  return name === '.env' || name.startsWith('.env.') || name.startsWith('.dev.vars') || /\.sqlite/.test(name);
+}
+
 // npm leaves .gitignore files out of published packages, so the template ships it renamed.
 const RENAMED: Readonly<Record<string, string>> = { _gitignore: '.gitignore' };
 
@@ -61,7 +67,7 @@ async function isEmptyOrMissing(directory: string) {
 async function copyTemplate(from: string, to: string) {
   await mkdir(to, { recursive: true });
   for (const entry of await readdir(from, { withFileTypes: true })) {
-    if (SKIPPED.has(entry.name)) continue;
+    if (SKIPPED.has(entry.name) || isPrivate(entry.name)) continue;
     const target = join(to, RENAMED[entry.name] ?? entry.name);
     if (entry.isDirectory()) await copyTemplate(join(from, entry.name), target);
     else if (entry.isFile()) await copyFile(join(from, entry.name), target);
