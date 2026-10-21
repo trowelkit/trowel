@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "void prepare && tsc -p tsconfig.json"
+    "typecheck": "void prepare && tsc -p tsconfig.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "@trowelkit/events": "workspace:*",
@@ -19,11 +20,13 @@
   },
   "devDependencies": {
     "@trowelkit/cli": "workspace:*",
+    "@trowelkit/testing": "workspace:*",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@void/react": "^1.1.12",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
+    "vitest": "^5.0.5",
     "void": "^1.1.12"
   }
 }

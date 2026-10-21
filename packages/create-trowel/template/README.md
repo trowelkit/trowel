@@ -37,6 +37,14 @@ npx trowel gen listener notify-post-author --event comment-posted --queued
 npx trowel gen notification comment-posted
 ```
 
+## Test
+
+```sh
+npm test
+```
+
+Vitest runs the tests in `src/`. `src/policies/post.test.ts` checks the policy's abilities directly. `src/events/publishing.test.ts` swaps Void's queues for test queues from [`@trowelkit/testing`](https://github.com/trowelkit/trowel/tree/main/packages/testing), publishes a post, drains the events queue, and checks the notification with the notifier's fake.
+
 ## Change the database
 
 Edit `db/schema.ts`, then generate a migration and review it:

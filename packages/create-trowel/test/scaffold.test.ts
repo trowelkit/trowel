@@ -13,6 +13,7 @@ const versions = {
   '@trowelkit/notifications': '0.1.0',
   '@trowelkit/policies': '0.1.0',
   '@trowelkit/rate-limit': '0.1.0',
+  '@trowelkit/testing': '0.1.0',
 };
 
 let root: string;
