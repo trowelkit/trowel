@@ -23,12 +23,14 @@ This creates a Void app with React, sign-in, and the packages below already wire
 
 | Package | What it does | Status |
 |---|---|---|
-| [`@trowelkit/policies`](packages/policies) | Gates and policies for authorization | In progress |
-| [`@trowelkit/events`](packages/events) | Events with sync or queued listeners | In progress |
-| [`@trowelkit/notifications`](packages/notifications) | Notifications over mail, database, webhooks and custom channels | In progress |
-| [`@trowelkit/rate-limit`](packages/rate-limit) | Rate limiting backed by Durable Objects | In progress |
-| [`@trowelkit/testing`](packages/testing) | Test queues that run queued work in unit tests | In progress |
-| [`@trowelkit/cli`](packages/cli) | Generators for policies, events, listeners and notifications | In progress |
+| [`@trowelkit/policies`](packages/policies) | Gates and policies for authorization | Ready, not yet on npm |
+| [`@trowelkit/events`](packages/events) | Events with sync or queued listeners | Ready, not yet on npm |
+| [`@trowelkit/notifications`](packages/notifications) | Notifications over mail, database, webhooks and custom channels | Ready, not yet on npm |
+| [`@trowelkit/rate-limit`](packages/rate-limit) | Rate limiting backed by Durable Objects | Ready, not yet on npm |
+| [`@trowelkit/testing`](packages/testing) | Test queues that run queued work in unit tests | Ready, not yet on npm |
+| [`@trowelkit/cli`](packages/cli) | Generators for policies, events, listeners and notifications | Ready, not yet on npm |
+
+All packages are tested and will be published as 0.1.0. Until then, use them from this repository.
 
 ## Development
 
