@@ -1,0 +1,54 @@
+{
+  "name": "@trowelkit/notifications",
+  "version": "0.0.0",
+  "description": "Notifications over mail, database and custom channels for Void apps.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/notifications#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/notifications"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "void",
+    "cloudflare",
+    "notifications",
+    "email",
+    "queues"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./void": {
+      "types": "./dist/void.d.mts",
+      "import": "./dist/void.mjs",
+      "default": "./dist/void.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "void": ">=1.1.0"
+  },
+  "peerDependenciesMeta": {
+    "void": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "miniflare": "5.20261012.0-beta",
+    "void": "^1.1.12"
+  }
+}
