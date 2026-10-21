@@ -1,4 +1,9 @@
-# Trowel
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/wordmark-dark.svg">
+    <img alt="Trowel" src=".github/assets/wordmark-light.svg" height="64">
+  </picture>
+</h1>
 
 Building blocks for [Void](https://void.cloud) apps on Cloudflare.
 

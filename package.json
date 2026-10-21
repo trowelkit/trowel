@@ -4,6 +4,10 @@
   "type": "module",
   "description": "Building blocks for Void apps on Cloudflare.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git"
+  },
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=22"

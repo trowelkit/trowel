@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "description": "Gates and policies for Void apps.",
   "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/policies#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/policies"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
   "type": "module",
   "sideEffects": false,
   "keywords": [
