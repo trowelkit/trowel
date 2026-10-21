@@ -1,0 +1,34 @@
+{
+  "name": "@trowelkit/cli",
+  "version": "0.0.0",
+  "description": "Generators for Trowel policies, events, listeners and notifications in Void apps.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "keywords": [
+    "void",
+    "cloudflare",
+    "cli",
+    "generator",
+    "scaffold"
+  ],
+  "bin": {
+    "trowel": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

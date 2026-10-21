@@ -28,7 +28,7 @@ This creates a Void app with React, sign-in, and the packages below already wire
 | [`@trowelkit/notifications`](packages/notifications) | Notifications over mail, database and custom channels | In progress |
 | [`@trowelkit/rate-limit`](packages/rate-limit) | Rate limiting backed by Durable Objects | In progress |
 | [`@trowelkit/testing`](packages/testing) | Test queues that run queued work in unit tests | In progress |
-| `@trowelkit/cli` | Generators for policies, events and notifications | Planned |
+| [`@trowelkit/cli`](packages/cli) | Generators for policies, events, listeners and notifications | In progress |
 
 ## Development
 
