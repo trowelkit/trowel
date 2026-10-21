@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.void/
+.void-wrangler.jsonc
+.wrangler/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store

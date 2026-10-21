@@ -1,0 +1,44 @@
+{
+  "name": "@trowelkit/policies",
+  "version": "0.0.0",
+  "description": "Gates and policies for Void apps.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "void",
+    "cloudflare",
+    "authorization",
+    "policies",
+    "gates"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./void": {
+      "types": "./dist/void.d.mts",
+      "import": "./dist/void.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "void": ">=1.1.0"
+  },
+  "peerDependenciesMeta": {
+    "void": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "void": "^1.1.12"
+  }
+}

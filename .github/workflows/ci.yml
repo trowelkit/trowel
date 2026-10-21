@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Weekly run against the latest Void release, to catch breaking changes early.
+  schedule:
+    - cron: '17 6 * * 1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Use the latest Void
+        if: github.event_name == 'schedule'
+        run: pnpm -r --filter './packages/*' update void@latest
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
