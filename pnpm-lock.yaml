@@ -35,6 +35,9 @@ importers:
       '@trowelkit/policies':
         specifier: workspace:*
         version: link:../../packages/policies
+      '@trowelkit/rate-limit':
+        specifier: workspace:*
+        version: link:../../packages/rate-limit
       hono:
         specifier: ^4.13.13
         version: 4.13.13

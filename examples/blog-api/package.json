@@ -11,6 +11,7 @@
     "@trowelkit/events": "workspace:*",
     "@trowelkit/notifications": "workspace:*",
     "@trowelkit/policies": "workspace:*",
+    "@trowelkit/rate-limit": "workspace:*",
     "hono": "^4.13.13"
   },
   "devDependencies": {

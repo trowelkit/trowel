@@ -68,6 +68,20 @@ in_inbox() {
   echo "FAIL  $1: \"$2\" is not in the dev inbox"; fails=$((fails+1))
 }
 
+# headers WHO METHOD PATH [BODY] -> the status line and response headers, lowercased
+headers() {
+  local who=$1 method=$2 path=$3 body=${4:-}
+  local args=(-s -o /dev/null -D - -X "$method" -b "$JARS/$who" -H "$ORIGIN")
+  [ -n "$body" ] && args+=(-H 'content-type: application/json' -d "$body")
+  curl "${args[@]}" "$BASE$path" | tr -d '\r' | tr '[:upper:]' '[:lower:]'
+}
+
+# has DESCRIPTION HEADERS LINE: HEADERS (from `headers`) must contain LINE.
+has() {
+  if grep -qF -- "$3" <<<"$2"; then echo "PASS  $1"
+  else echo "FAIL  $1: no \"$3\" in $(tr '\n' ' ' <<<"$2")"; fails=$((fails+1)); fi
+}
+
 check() { # description expected-status WHO METHOD PATH [BODY]
   local desc=$1 expected=$2; shift 2
   local result; result=$(req "$@")
@@ -113,6 +127,28 @@ check "list for guest shows only published"        200 guest GET /api/posts
 check "list for alice shows her draft too"         200 alice GET /api/posts
 check "alice can delete her draft"                 204 alice DELETE "/api/posts/$draft_id"
 check "deleted post is gone"                       404 alice GET "/api/posts/$draft_id"
+
+# Rate limiting: five new posts per user every ten seconds, counted in a Durable Object per user.
+carol="carol$RUN"
+signup "$carol" "carol-$RUN@example.com"
+for i in 1 2 3 4; do
+  check "carol's post $i is within the limit"      201 "$carol" POST /api/posts "{\"title\":\"Carol $i\"}"
+done
+h=$(headers "$carol" POST /api/posts '{"title":"Carol 5"}')
+has "the fifth post is still allowed"             "$h" " 201"
+has "it reports the limit"                        "$h" "ratelimit-limit: 5"
+has "it reports nothing remaining"                "$h" "ratelimit-remaining: 0"
+h=$(headers "$carol" POST /api/posts '{"title":"Carol 6"}')
+has "the sixth post is rate limited (429)"        "$h" " 429"
+has "the 429 says when to retry"                  "$h" "retry-after: "
+has "the 429 has the rate limit headers"          "$h" "ratelimit-remaining: 0"
+check "other users aren't affected"               201 bob POST /api/posts '{"title":"Bob post"}'
+wait_for=$(grep '^retry-after: ' <<<"$h" | cut -d' ' -f2)
+echo "      waiting ${wait_for:-10}s for carol's window to end"
+sleep $(( ${wait_for:-10} + 1 ))
+h=$(headers "$carol" POST /api/posts '{"title":"Carol 7"}')
+has "a new window opens after the old one ends"   "$h" " 201"
+has "with the full limit again"                   "$h" "ratelimit-remaining: 4"
 
 echo
 [ "$fails" -eq 0 ] && echo "ALL PASSED" || echo "$fails FAILED"
