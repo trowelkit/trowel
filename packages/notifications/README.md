@@ -145,7 +145,11 @@ export const Deployed = defineNotification('deployed', {
 });
 ```
 
-`url` is a string or a function of the recipient, so each team can have its own webhook. Return nothing to skip a recipient without retrying. Pass `headers` for authorization. Rate limits (429) and server errors (5xx) are retried; other client errors aren't. Errors never include the URL, which often holds a secret.
+`url` is a string or a function of the recipient, so each team can have its own webhook. Return nothing to skip a recipient without retrying. Pass `headers` for authorization.
+
+By default only `https` URLs whose host isn't a local or private address are called, redirects aren't followed, and a call gives up after `timeout` seconds (10). If people can enter their own webhook URLs, pass `allowUrl` to accept only the services you support, for example `(url) => url.hostname === 'hooks.slack.com'`: a host name can still point at a private address.
+
+Rate limits (429), server errors (5xx), timeouts and network errors are retried; other answers aren't. Errors never include the URL, which often holds a secret.
 
 ## Custom channels
 
@@ -194,7 +198,7 @@ While faked, sends are recorded with the channels they would use and their built
 | `notifier.sendNow(recipients, notification, payload?)` | Delivers now |
 | `notifier.consume(batch)` | Queue consumer |
 | `notifier.fake({ only? })` | Records sends for tests |
-| `webhookChannel({ url, headers?, fetch? })` | Posts the message as JSON to a webhook |
+| `webhookChannel({ url, headers?, allowUrl?, timeout?, fetch? })` | Posts the message as JSON to a webhook |
 | `DeliveryError` | Fails a delivery, optionally without retries |
 | `mailChannel(options?)` (`/void`) | Mail through `sendEmail` |
 | `databaseChannel({ table, db?, recipientId? })` (`/void`) | Stored notifications, with `unread`, `all`, `unreadCount` and `markAsRead` |

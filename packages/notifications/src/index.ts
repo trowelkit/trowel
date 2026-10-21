@@ -26,7 +26,7 @@ export {
   type PayloadArgs,
   type Recipients,
 } from './notifier.ts';
-export { webhookChannel, type WebhookChannelOptions, type WebhookMessage } from './webhook.ts';
+export { isPrivateHost, webhookChannel, type WebhookChannelOptions, type WebhookMessage } from './webhook.ts';
 export {
   isQueuedNotificationMessage,
   type QueueBatchLike,

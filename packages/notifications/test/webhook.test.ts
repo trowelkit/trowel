@@ -66,6 +66,71 @@ describe('webhookChannel', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it('only calls https URLs outside local and private networks by default', async () => {
+    const fetch = fetchAnswering(200);
+    const send = (url: string, allowUrl?: (url: URL) => boolean) =>
+      Promise.resolve(
+        webhookChannel({ url, fetch, ...(allowUrl && { allowUrl }) }).send({
+          id: 'n1',
+          notification: 'x',
+          channel: 'chat',
+          recipient: {},
+          message: {},
+        }),
+      ).catch((e: unknown) => e as DeliveryError);
+
+    for (const url of [
+      'http://chat.example.com/hook',
+      'https://localhost/hook',
+      'https://127.0.0.1/hook',
+      'https://0x7f.1/hook',
+      'https://10.0.0.5/hook',
+      'https://169.254.169.254/latest',
+      'https://[::1]/hook',
+      'https://metadata.internal/hook',
+    ]) {
+      const error = await send(url);
+      expect(error, url).toBeInstanceOf(DeliveryError);
+      expect(error).toMatchObject({ retryable: false, message: 'The chat webhook for "x" isn\'t an allowed URL.' });
+    }
+    expect(await send('not a url')).toMatchObject({ retryable: false, message: 'The chat webhook for "x" isn\'t a valid URL.' });
+    expect(fetch).not.toHaveBeenCalled();
+
+    expect(await send('http://localhost:8787/hook', (url) => url.hostname === 'localhost')).toBeUndefined();
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+
+  it("doesn't follow redirects and gives up after the timeout", async () => {
+    const fetch = fetchAnswering(302);
+    const channel = webhookChannel({ url: 'https://chat.example.com/hook', timeout: 2, fetch });
+    const error = await Promise.resolve(
+      channel.send({ id: 'n1', notification: 'x', channel: 'chat', recipient: {}, message: {} }),
+    ).catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ retryable: false, message: 'The chat webhook for "x" answered 302.' });
+    expect(fetch.mock.calls[0]![1]).toMatchObject({ redirect: 'manual', signal: expect.any(AbortSignal) });
+  });
+
+  it('keeps the URL out of network errors', async () => {
+    const outcome = async (thrown: Error) => {
+      const channel = webhookChannel({
+        url: 'https://chat.example.com/hooks/secret',
+        fetch: async () => {
+          throw thrown;
+        },
+      });
+      return Promise.resolve(
+        channel.send({ id: 'n1', notification: 'x', channel: 'chat', recipient: {}, message: {} }),
+      ).catch((e: unknown) => e as DeliveryError);
+    };
+
+    const failed = (await outcome(new TypeError('fetch failed: https://chat.example.com/hooks/secret'))) as DeliveryError;
+    expect(failed).toMatchObject({ retryable: true, message: 'The chat webhook for "x" couldn\'t be reached.' });
+    expect(failed.cause).toBeUndefined();
+    const timeout = Object.assign(new Error('The operation timed out.'), { name: 'TimeoutError' });
+    expect(await outcome(timeout)).toMatchObject({ retryable: true, message: 'The chat webhook for "x" timed out.' });
+  });
+
   it('reads the URL and headers when sending', async () => {
     const fetch = fetchAnswering(200);
     let token = 'first';
