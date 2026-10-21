@@ -26,3 +26,23 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
+
+  # Runs the example and the starter template in Void's dev server and checks them end to end.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Blog example
+        working-directory: examples/blog-api
+        run: |
+          pnpm void db push
+          ../../scripts/with-dev-server.sh . 5173 ./scripts/e2e.sh
+      - name: Starter template
+        run: scripts/with-dev-server.sh packages/create-trowel/template 5174 packages/create-trowel/scripts/e2e.sh

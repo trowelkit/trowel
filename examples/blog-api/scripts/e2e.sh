@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # End-to-end check of the example. Start `pnpm dev` first, then run this script.
 set -u
-BASE=http://localhost:5173
+BASE=${BASE:-http://localhost:5173}
 JARS=$(mktemp -d)
 # The dev inbox needs the token that `pnpm dev` writes here.
 TOKEN=$(cat "$(dirname "$0")/../.void/dev-trigger-token")
@@ -153,3 +153,4 @@ has "with the full limit again"                   "$h" "ratelimit-remaining: 4"
 echo
 [ "$fails" -eq 0 ] && echo "ALL PASSED" || echo "$fails FAILED"
 rm -rf "$JARS"
+[ "$fails" -eq 0 ]
