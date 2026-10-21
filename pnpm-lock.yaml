@@ -120,6 +120,18 @@ importers:
         specifier: ^1.1.12
         version: 1.1.12(@types/node@26.6.5)(arktype@2.2.9)(kysely@0.29.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(valibot@1.5.0(typescript@7.0.2))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5(@types/node@26.6.5)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(wrangler@4.151.3(@cloudflare/workers-types@5.20261021.1)(@types/node@26.6.5))(zod@4.6.7)
 
+  packages/testing:
+    devDependencies:
+      '@trowelkit/events':
+        specifier: workspace:*
+        version: link:../events
+      '@trowelkit/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      void:
+        specifier: ^1.1.12
+        version: 1.1.12(@types/node@26.6.5)(arktype@2.2.9)(kysely@0.29.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(valibot@1.5.0(typescript@7.0.2))(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(vitest@5.0.5(@types/node@26.6.5)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))(wrangler@4.151.3(@cloudflare/workers-types@5.20261021.1)(@types/node@26.6.5))(zod@4.6.7)
+
 packages:
 
   '@ark/schema@0.56.8':

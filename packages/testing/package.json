@@ -1,0 +1,41 @@
+{
+  "name": "@trowelkit/testing",
+  "version": "0.0.0",
+  "description": "Test queues and helpers for testing Void apps and Trowel packages.",
+  "license": "MIT",
+  "homepage": "https://github.com/trowelkit/trowel/tree/main/packages/testing#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trowelkit/trowel.git",
+    "directory": "packages/testing"
+  },
+  "bugs": "https://github.com/trowelkit/trowel/issues",
+  "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "void",
+    "cloudflare",
+    "testing",
+    "queues",
+    "fakes"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@trowelkit/events": "workspace:*",
+    "@trowelkit/notifications": "workspace:*",
+    "void": "^1.1.12"
+  }
+}
