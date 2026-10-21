@@ -126,7 +126,10 @@ describe('mailChannel', () => {
       channel.send({ id: 'n1', notification: 'x', channel: 'mail', recipient: alice, message: { subject: 's', text: 't' } }),
     ).catch((e: unknown) => e);
     expect(error).toMatchObject({ code: 'QUOTA_EXCEEDED', retryable: true });
-    expect((error as Error).message).toContain('failed for b@example.com');
+    expect((error as Error).message).toBe('Mail for "x" failed for 1 of 2 recipients: QUOTA_EXCEEDED');
+    // The addresses stay out of the message and out of what a logger prints.
+    expect((error as MailDeliveryError).result).toMatchObject({ deliveries: [{ recipient: 'a@example.com' }, { recipient: 'b@example.com' }] });
+    expect(Object.keys(error as object)).not.toContain('result');
   });
 
   it('sends an idempotency key made from the notification id when asked', async () => {

@@ -31,17 +31,21 @@ const PERMANENT_CODES: ReadonlySet<SendEmailErrorCode> = new Set<SendEmailErrorC
   'IDEMPOTENCY_CONFLICT',
 ]);
 
-/** Thrown by the mail channel when `sendEmail` reports a failure. */
+/**
+ * Thrown by the mail channel when `sendEmail` reports a failure. The message
+ * leaves out recipient addresses, so logging the error doesn't log them.
+ */
 export class MailDeliveryError extends DeliveryError {
   override readonly name: string = 'MailDeliveryError';
   /** The first failure's code. */
   readonly code: SendEmailErrorCode;
-  readonly result: SendEmailResult;
+  /** The full result, including recipient addresses. Not enumerable, so loggers skip it. */
+  declare readonly result: SendEmailResult;
 
   constructor(message: string, code: SendEmailErrorCode, result: SendEmailResult, retryable: boolean) {
     super(message, { retryable });
     this.code = code;
-    this.result = result;
+    Object.defineProperty(this, 'result', { value: result, enumerable: false });
   }
 }
 
@@ -105,7 +109,7 @@ export function mailChannel<R = MailRecipient>(options: MailChannelOptions<R> = 
       const failed = result.deliveries.flatMap((d) => (d.ok ? [] : [d]));
       const first = failed[0]!;
       throw new MailDeliveryError(
-        `Mail for "${notification}" failed for ${failed.map((d) => d.recipient).join(', ')}: ${first.error.code}: ${first.error.message}`,
+        `Mail for "${notification}" failed for ${failed.length} of ${result.deliveries.length} recipients: ${first.error.code}`,
         first.error.code,
         result,
         failed.every((d) => retryable(d.error.code)),
