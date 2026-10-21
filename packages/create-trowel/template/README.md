@@ -26,6 +26,17 @@ Open http://localhost:5173 and sign up. When the dev server starts, Void applies
 
 Void's own conventions decide the top-level folders; Trowel code lives in `src/`.
 
+## Generate more
+
+[`@trowelkit/cli`](https://github.com/trowelkit/trowel/tree/main/packages/cli) writes new policies, events, listeners and notifications in the same layout:
+
+```sh
+npx trowel gen policy comment
+npx trowel gen event comment-posted
+npx trowel gen listener notify-post-author --event comment-posted --queued
+npx trowel gen notification comment-posted
+```
+
 ## Change the database
 
 Edit `db/schema.ts`, then generate a migration and review it:

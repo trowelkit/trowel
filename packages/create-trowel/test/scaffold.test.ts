@@ -8,6 +8,7 @@ import { nextSteps, packageManagerFrom, scaffold, toPackageName, type ScaffoldOp
 
 const templateDir = fileURLToPath(new URL('../template', import.meta.url));
 const versions = {
+  '@trowelkit/cli': '0.1.0',
   '@trowelkit/events': '0.1.0',
   '@trowelkit/notifications': '0.1.0',
   '@trowelkit/policies': '0.1.0',

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { defineConfig } from 'tsdown';
 
 // The starter depends on the Trowel packages it was built and tested with.
-const packages = ['events', 'notifications', 'policies', 'rate-limit'];
+const packages = ['cli', 'events', 'notifications', 'policies', 'rate-limit'];
 const versions = Object.fromEntries(
   packages.map((name) => {
     const manifest = JSON.parse(readFileSync(new URL(`../${name}/package.json`, import.meta.url), 'utf8'));
